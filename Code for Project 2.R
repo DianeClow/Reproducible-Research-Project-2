@@ -17,6 +17,14 @@ Stor <- read.csv("repdata-data-StormData.csv")
 ##However, there is no need to make any specific recommendations in 
 ##your report.
 
-
+## sum of fatalities and injuries for each event type
 fatalites <- aggregate(FATALITIES ~ EVTYPE, StormData, sum)
 injuries <- aggregate(INJURIES ~ EVTYPE, StormData, sum)
+
+## top 20 for fatalities and injuries
+fatal <- subset(fatalites, fatalites$FATALITIES > 100)
+injury <- subset(injuries, injuries$INJURIES > 400)
+
+## combined the two lists, where both injuries and fatalities
+## were in the top 20
+harm <- merge(fatal, injury, by = "EVTYPE")
