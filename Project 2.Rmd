@@ -1,0 +1,15 @@
+---
+title: Analysis of the U.S. National Oceanic and Atmospheric Administration's (NOAA) Storm Database
+author: "Diane Clow"
+date: "June 14, 2015"
+output: html_document
+---
+Reproducible Research
+
+
+<b>Synopsis</b>:  This analysis was produced for the second project in the Reproducible Research class offered on Coursera.  In this project, the Storm Datable maintained by NOAA was analysed looking for information on: 1) What events are most harmful to humans, and 2) What events have the greated economical impact.
+
+<b>Data Processing</b>:
+
+<b>Results</b>:
+
