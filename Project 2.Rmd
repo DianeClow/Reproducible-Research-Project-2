@@ -7,9 +7,71 @@ output: html_document
 Reproducible Research
 
 
-<b>Synopsis</b>:  This analysis was produced for the second project in the Reproducible Research class offered on Coursera.  In this project, the Storm Datable maintained by NOAA was analysed looking for information on: 1) What events are most harmful to humans, and 2) What events have the greated economical impact.
+### Introduction
+This analysis was produced for the second project in the Reproducible Research class offered on Coursera.  In this project, the Storm Datable maintained by NOAA was analysed looking for information on: 1) What events are most harmful to humans, and 2) What events have the greated economical impact.
 
-<b>Data Processing</b>:
+### Importing Data
+
+The data is from the NOAA Storm Database and contains data from 1950 to November 2011.  The data has 902297 observations and 37 variables.
+
+```{r}
+StormData <- read.csv("repdata-data-StormData.csv.bz2")
+library(ggplot2)
+```
+
+The column names in the data set are listed below
+
+```{r}
+colnames(StormData)
+```
+
+### Question 1
+
+Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+
+To answer this question, first identify which variables will be used.  Reading the different column names, "FATALITIES" and "INJURIES".  Seemed the most usefuel.  Using the aggregate function, the total injuries and fatalities were calculated for each event type.
+
+```{r}
+fatalites <- aggregate(FATALITIES ~ EVTYPE, StormData, sum)
+injuries <- aggregate(INJURIES ~ EVTYPE, StormData, sum)
+```
+
+Then the totals were reduced to the top 5 for both fatalites and injuries.
+
+```{r}
+fatal <- subset(fatalites, fatalites$FATALITIES > 600)
+injury <- subset(injuries, injuries$INJURIES > 5000)
+```
+
+These two are combined, only keeping the values that are present in both fatalities and injuries.  At this point there are 12 events that were both in the top 20 for both fatalities and injuries.  harm2 is the same as harm, but the data frame has been sorted by the number of Fatalities, with the largest value in the first row.
+
+```{r}
+harm <- merge(fatal, injury, by = "EVTYPE")
+as.character(harm$EVTYPE)
+harm2 <- harm[order(harm$FATALITIES, decreasing = TRUE), ]
+harm2
+```
+
+The below code modifys and combines the injury and fatal data frames, keeping track of which came from which.  They are then combined into one data frame, plot_data (shown below), and that is plotted in a bar chart.  There are a couple columns that only have one color.  This means that while the event had enough of either injuries or fatalities to show up for one, they didn't have enough to show up for the other.  Looking at the chart below it is very clear that Tornados have both the largest number of fatalities and injuries by a landslide.
+
+```{r}
+type <- c("INJURIES", "INJURIES", "INJURIES", "INJURIES", "INJURIES")
+injury1 <- cbind(injury, type)
+type <- c("FATALITIES", "FATALITIES", "FATALITIES", "FATALITIES", "FATALITIES")
+fatal1 <- cbind(fatal, type)
+colnames(injury1) <- c("EVTYPE", "number", "type")
+colnames(fatal1) <- c("EVTYPE", "number", "type")
+plot_data <- rbind(injury1, fatal1)
+plot_data
+
+qplot(x=EVTYPE, y=number, fill=type,
+      data=plot_data, geom="bar", stat="identity",
+      position="dodge")
+```
+
+### Question 2
+
+Across the United States, which types of events have the greatest economic consequences?
 
 <b>Results</b>:
 
