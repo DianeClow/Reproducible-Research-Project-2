@@ -64,7 +64,7 @@ colnames(fatal1) <- c("Event", "number", "type")
 plot_data <- rbind(injury1, fatal1)
 plot_data
 
-qplot(x=Event, y=number, fill=type,
+qplot(x=EVTYPE, y=number, fill=type,
       data=plot_data, geom="bar", stat="identity",
       position="dodge")
 ```
@@ -86,15 +86,7 @@ StormData1[StormData1$CROPDMGEXP == "M",]$CROPDMG <- StormData1[StormData1$CROPD
 StormData1[StormData1$CROPDMGEXP == "B",]$CROPDMG <- StormData1[StormData1$CROPDMGEXP == "B",]$CROPDMG * 1000000000
 ```
 
-Next using the function aggregate, the cost of both property damage and crop damage are combined for each event.  The plot below shows the calculated cost for the 9 events that cost the most.
 
-```{r}
-Cost <- aggregate(CROPDMG + PROPDMG ~ EVTYPE, StormData1, sum)
-cost <- subset(Cost, Cost[, 2] > 10000000000)
-colnames(cost) <- c("Event", "cost")
-qplot(x=Event, y=cost, data=cost, geom="bar", stat="identity", 
-      position="dodge", main="Total Property & Crop Damage")
-```
 
 ### Results
 
