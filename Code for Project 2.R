@@ -1,6 +1,6 @@
 ## unzip and read in Data
-unzip("repdata-data-StormData.csv.bz2")
-Stor <- read.csv("repdata-data-StormData.csv")
+
+StormData <- read.csv("repdata-data-StormData.csv.bz2")
 
 ##Questions
 ##Your data analysis must address the following questions:
@@ -21,10 +21,31 @@ Stor <- read.csv("repdata-data-StormData.csv")
 fatalites <- aggregate(FATALITIES ~ EVTYPE, StormData, sum)
 injuries <- aggregate(INJURIES ~ EVTYPE, StormData, sum)
 
-## top 20 for fatalities and injuries
-fatal <- subset(fatalites, fatalites$FATALITIES > 100)
-injury <- subset(injuries, injuries$INJURIES > 400)
+## top 5 for fatalities and injuries
+fatal <- subset(fatalites, fatalites$FATALITIES > 600)
+injury <- subset(injuries, injuries$INJURIES > 5000)
 
 ## combined the two lists, where both injuries and fatalities
-## were in the top 20
+## were in the top 5
 harm <- merge(fatal, injury, by = "EVTYPE")
+
+## prints the 12 events that are still present
+as.character(harm$EVTYPE)
+
+
+#combines to one list
+type <- c("INJURIES", "INJURIES", "INJURIES", "INJURIES", "INJURIES")
+injury1 <- cbind(injury, type)
+type <- c("FATALITIES", "FATALITIES", "FATALITIES", "FATALITIES", "FATALITIES")
+fatal1 <- cbind(fatal, type)
+colnames(injury1) <- c("Event", "number", "type")
+colnames(fatal1) <- c("Event", "number", "type")
+plot_data <- rbind(injury1, fatal1)
+
+
+qplot(x=EVTYPE, y=number, fill=type,
+      data=plot_data, geom="bar", stat="identity",
+      position="dodge")
+
+
+
