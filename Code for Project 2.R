@@ -43,9 +43,29 @@ colnames(fatal1) <- c("Event", "number", "type")
 plot_data <- rbind(injury1, fatal1)
 
 
-qplot(x=EVTYPE, y=number, fill=type,
+qplot(x=Event, y=number, fill=type,
       data=plot_data, geom="bar", stat="identity",
       position="dodge")
 
+StormData1 <- StormData
+
+StormData1[StormData1$PROPDMGEXP == "K",]$PROPDMG <- StormData1[StormData1$PROPDMGEXP == "K",]$PROPDMG * 1000
+StormData1[StormData1$PROPDMGEXP == "M",]$PROPDMG <- StormData1[StormData1$PROPDMGEXP == "M",]$PROPDMG * 1000000
+StormData1[StormData1$PROPDMGEXP == "B",]$PROPDMG <- StormData1[StormData1$PROPDMGEXP == "B",]$PROPDMG * 1000000000
+StormData1[StormData1$CROPDMGEXP == "K",]$CROPDMG <- StormData1[StormData1$CROPDMGEXP == "K",]$CROPDMG * 1000
+StormData1[StormData1$CROPDMGEXP == "M",]$CROPDMG <- StormData1[StormData1$CROPDMGEXP == "M",]$CROPDMG * 1000000
+StormData1[StormData1$CROPDMGEXP == "B",]$CROPDMG <- StormData1[StormData1$CROPDMGEXP == "B",]$CROPDMG * 1000000000
+
+## combined total cost of CROPDMG and PROPDMG
+Cost <- aggregate(CROPDMG + PROPDMG ~ EVTYPE, StormData1, sum)
+## top 15 most expensive
+cost <- subset(Cost, Cost[, 2] > 5000000000)
+## top 5 most expensive
+cost <- subset(Cost, Cost[, 2] > 18000000000)
+## top 9 most expensive
+cost <- cost <- subset(Cost, Cost[, 2] > 10000000000)
 
 
+colnames(cost) <- c("Event", "cost")
+qplot(x=Event, y=cost, data=cost, geom="bar", stat="identity", 
+      position="dodge", main="Total Property & Crop Damage")
